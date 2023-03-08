@@ -1,42 +1,41 @@
 import os
 import json
 
-path='/media/catherine/ExtraDrive1/Eli_Ecoli/'
+path='/my_directory/' #path where genomes are located and where results will be written
 
-with open(path+'new_ecoli_genomes_lst.txt','r') as f:
+with open(path+'genomes_list.txt','r') as f: #takes in a file of genome file paths
     files=[i.rstrip() for i in f.readlines()]
 
 # submits files to phaster
-#for i in files:
-#    outfile=i[:i.find(".")]
-#    command='nohup wget --post-file="'+path+'ec_pt1/'+i+'" "http://phaster.ca/phaster_api?contigs=1" -O '+path+'new_phaster_output/'+outfile
-#    print(command+'\n')
-#    os.system(command)
-
-# check current status of submission: http://phaster.ca/phaster_api?acc=ZZ_567e255585
-
-#wget "http://phaster.ca/phaster_api?acc=ZZ_023a167bf8" -O Output_filename
+for i in files:
+    outfile=i[:i.find(".")]
+    command='nohup wget --post-file="'+path+i+'" "http://phaster.ca/phaster_api?contigs=1" -O '+path+'new_phaster_output/'+outfile
+    print(command+'\n')
+    os.system(command)
 
 # gets results from phaster
-#for i in files:
-#    output=path+'phaster_output/'+i[:i.find(".")]
-#    with open(output,'r') as f:
-#        data=json.load(f)
-#    job_id=data['job_id']
-#    command='wget "phaster.ca/submissions/'+job_id+'.zip"'
-#    os.system(command)
-#    command='mv '+path+'/'+job_id+'.zip '+path+'new_phaster_output/'+i[:i.find(".")]+'_output.zip'
-#    os.system(command)
+for i in files:
+    output=path+'phaster_output/'+i[:i.find(".")]
+    with open(output,'r') as f:
+        data=json.load(f)
+    job_id=data['job_id']
+    command='wget "phaster.ca/submissions/'+job_id+'.zip"'
+    os.system(command)
+    command='mv '+path+'/'+job_id+'.zip '+path+'new_phaster_output/'+i[:i.find(".")]+'_output.zip'
+    os.system(command)
 
+# unzip results file via bash
 # for i in *.zip; do unzip "$i" -d "${i%%.zip}"; done
 
+
+# this code parses all of the PHASTER results, creating separate multi-FASTA format files for intact, questionable, & incomplete
 from os import walk
 from Bio import SeqIO
 
 # root folder where all of the result folders are
 path=path+'new_phaster_output/'
 
-# output file
+# output files
 output_intact=open(path+'all_new_intact_phasters.fna','w')
 output_questionable=open(path+'all_questionable_phasters.fna','w')
 output_incomplete=open(path+'all_incomplete_phasters.fna','w')
