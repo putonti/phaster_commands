@@ -1,2 +1,3 @@
 # phaster_commands
-commands to submit, retrieve, and parse PHASTER results
+This code includes commands to submit, retrieve, and parse PHASTER results.
+PHASTER: https://phaster.ca/
